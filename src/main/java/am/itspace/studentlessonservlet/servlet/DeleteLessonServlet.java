@@ -20,6 +20,6 @@ public class DeleteLessonServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
         lessonService.deleteLesson(id);
-        resp.sendRedirect("/lessons");
+        resp.sendRedirect("/WEB-INF/lessons");
     }
 }

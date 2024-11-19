@@ -21,7 +21,7 @@ public class EditLessonServlet extends HttpServlet {
         int lessonId = Integer.parseInt(req.getParameter("id"));
         Lesson lesson = lessonService.getLessonById(lessonId);
         req.setAttribute("lesson", lesson);
-        req.getRequestDispatcher("/editLesson.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/editLesson.jsp").forward(req,resp);
     }
 
     @SneakyThrows

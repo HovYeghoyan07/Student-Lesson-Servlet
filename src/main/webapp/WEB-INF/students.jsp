@@ -25,6 +25,7 @@
         <th>email</th>
         <th>age</th>
         <th>lesson name</th>
+        <th>action</th>
     </tr>
     <% for (Student student : students) { %>
     <tr>

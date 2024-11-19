@@ -12,7 +12,7 @@
 </head>
 <body>
 <h1>Add Lesson</h1>
-<a href="/lessons">Lessons</a> | <a href="index.jsp">Main</a> <br>
+<a href="/lessons">Lessons</a>  <br>
 
 <form action="/addLesson" method="post">
     Name: <input type="text" name="name"><br>

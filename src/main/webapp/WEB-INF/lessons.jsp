@@ -29,6 +29,7 @@
         <th>duration</th>
         <th>lecturer_name</th>
         <th>price</th>
+        <th>action</th>
     </tr>
 
     <% for (Lesson lesson : lessons) { %>

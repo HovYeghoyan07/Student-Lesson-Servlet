@@ -22,7 +22,7 @@ public class EditStudentServlet extends HttpServlet {
         int studentId = Integer.parseInt(req.getParameter("id"));
         Student student = studentService.getStudentById(studentId);
         req.setAttribute("student", student);
-        req.getRequestDispatcher("/editStudent.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/editStudent.jsp").forward(req, resp);
     }
 
     @SneakyThrows

@@ -4,6 +4,7 @@ package am.itspace.studentlessonservlet.servlet;
 
 import am.itspace.studentlessonservlet.model.Lesson;
 import am.itspace.studentlessonservlet.model.Student;
+import am.itspace.studentlessonservlet.model.User;
 import am.itspace.studentlessonservlet.service.LessonService;
 import am.itspace.studentlessonservlet.service.StudentService;
 
@@ -25,29 +26,28 @@ public class AddStudentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Lesson> lessons = lessonService.getAllLessons();
         req.setAttribute("lessons", lessons);
-        req.getRequestDispatcher("/addStudent.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/addStudent.jsp").forward(req,resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String name = req.getParameter("name");
-        String surname = req.getParameter("surname");
+        User user = (User) req.getSession().getAttribute("user");
         String email = req.getParameter("email");
-        int age = Integer.parseInt(req.getParameter("age"));
-        int lessonId = Integer.parseInt(req.getParameter("lesson_id")) ;
-
-        Student student  = Student.builder()
-                .name(name)
-                .surname(surname)
-                .email(email)
-                .age(age)
-                .lesson(lessonService.getLessonById(lessonId))
-                .build();
-
-        studentService.add(student);
-
-
-
-        resp.sendRedirect("/students");
+        Student student = studentService.getStudentByEmail(email);
+        if (student == null) {
+            student = Student.builder()
+                    .name(req.getParameter("name"))
+                    .surname(req.getParameter("surname"))
+                    .email(email)
+                    .age(Integer.parseInt(req.getParameter("age")))
+                    .user(user)
+                    .lesson(lessonService.getLessonById(Integer.parseInt(req.getParameter("lesson_id"))))
+                    .build();
+            studentService.add(student);
+            resp.sendRedirect("/student");
+        } else {
+            req.getSession().setAttribute("studentAddMessage", "Student email already exists");
+            resp.sendRedirect("/addStudent");
+        }
     }
 }

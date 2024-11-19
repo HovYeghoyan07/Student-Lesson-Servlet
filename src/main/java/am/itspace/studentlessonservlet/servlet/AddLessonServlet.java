@@ -1,6 +1,7 @@
 package am.itspace.studentlessonservlet.servlet;
 
 import am.itspace.studentlessonservlet.model.Lesson;
+import am.itspace.studentlessonservlet.model.User;
 import am.itspace.studentlessonservlet.service.LessonService;
 import am.itspace.studentlessonservlet.util.DateUtil;
 import lombok.SneakyThrows;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -21,34 +23,35 @@ public class AddLessonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/addLesson.jsp").forward(req,resp);
+        req.getRequestDispatcher("/WEB-INF/addLesson.jsp").forward(req, resp);
     }
 
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try{
-            String name = req.getParameter("name");
-            Date duration = DateUtil.fromWebStringToDate(req.getParameter("duration"));
-            String lecturerName = req.getParameter("lecturer_name");
-            Double price = Double.parseDouble(req.getParameter("price"));
-            System.out.println(duration);
-            Lesson lesson = Lesson.builder()
-                    .name(name)
-                    .duration(duration)
-                    .lecturerName(lecturerName)
-                    .price(price)
-                    .build();
+        try {
 
-            lessonService.add(lesson);
-        }catch (ParseException e){
+
+            String name = req.getParameter("name");
+            Lesson lesson = lessonService.getLessonByName(name);
+            User user = (User) req.getSession().getAttribute("user");
+            if (lesson == null) {
+                lesson = Lesson.builder()
+                        .name(name)
+                        .duration(DateUtil.fromWebStringToDate(req.getParameter("duration")))
+                        .lecturerName(req.getParameter("lecturer_name"))
+                        .price(Double.parseDouble(req.getParameter("price")))
+                        .user(user)
+                        .build();
+                lessonService.add(lesson);
+                resp.sendRedirect("/lesson");
+            } else {
+                req.getSession().setAttribute("msg", "Lesson already exists");
+                resp.sendRedirect("/addLessons");
+            }
+        } catch ( ParseException e) {
             e.printStackTrace();
         }
 
-
-        resp.sendRedirect("/lessons");
-
     }
-
-
 }
